@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
+		<OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
+		<OutputType Condition="'$(Configuration)' == 'Release'">WinExe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<TargetName>MoonWorksDearImGuiScaffold</TargetName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
