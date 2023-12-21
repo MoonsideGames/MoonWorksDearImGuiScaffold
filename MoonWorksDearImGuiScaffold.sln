@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonWorksDearImGuiScaffold", "MoonWorksDearImGuiScaffold.csproj", "{6CCE887D-748D-4806-8900-E79945B03F06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonWorks", "lib\MoonWorks\MoonWorks.csproj", "{181A0E72-417D-49B2-89F6-1D042CE8AF7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dav1dfile-CS", "lib\MoonWorks\lib\dav1dfile\csharp\dav1dfile-CS.csproj", "{2F4FA1A6-02D5-480A-9C83-E9B40C6D29AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAudio-CS.Core", "lib\MoonWorks\lib\FAudio\csharp\FAudio-CS.Core.csproj", "{5B6ACF3C-BB48-432F-98D2-35BE84A00539}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefreshCS", "lib\MoonWorks\lib\RefreshCS\RefreshCS.csproj", "{CCFCA552-3DEA-4F4E-938D-F5ED022063D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL2-CS.Core", "lib\MoonWorks\lib\SDL2-CS\SDL2-CS.Core.csproj", "{1243BB8E-F065-446A-9B1C-629D731F3B63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WellspringCS", "lib\MoonWorks\lib\WellspringCS\WellspringCS.csproj", "{00D0DD4D-959F-4B95-85D9-B3CC9AD2AA66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "lib\ImGui.NET\ImGui.NET.csproj", "{3ABD7C60-D069-484F-A0B2-2F0C2C1BD5A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CCE887D-748D-4806-8900-E79945B03F06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6CCE887D-748D-4806-8900-E79945B03F06}.Debug|x64.Build.0 = Debug|Any CPU
+		{6CCE887D-748D-4806-8900-E79945B03F06}.Release|x64.ActiveCfg = Release|Any CPU
+		{6CCE887D-748D-4806-8900-E79945B03F06}.Release|x64.Build.0 = Release|Any CPU
+		{181A0E72-417D-49B2-89F6-1D042CE8AF7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{181A0E72-417D-49B2-89F6-1D042CE8AF7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{181A0E72-417D-49B2-89F6-1D042CE8AF7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{181A0E72-417D-49B2-89F6-1D042CE8AF7D}.Release|x64.Build.0 = Release|Any CPU
+		{2F4FA1A6-02D5-480A-9C83-E9B40C6D29AC}.Debug|x64.ActiveCfg = Debug|x64
+		{2F4FA1A6-02D5-480A-9C83-E9B40C6D29AC}.Debug|x64.Build.0 = Debug|x64
+		{2F4FA1A6-02D5-480A-9C83-E9B40C6D29AC}.Release|x64.ActiveCfg = Release|x64
+		{2F4FA1A6-02D5-480A-9C83-E9B40C6D29AC}.Release|x64.Build.0 = Release|x64
+		{5B6ACF3C-BB48-432F-98D2-35BE84A00539}.Debug|x64.ActiveCfg = Debug|x64
+		{5B6ACF3C-BB48-432F-98D2-35BE84A00539}.Debug|x64.Build.0 = Debug|x64
+		{5B6ACF3C-BB48-432F-98D2-35BE84A00539}.Release|x64.ActiveCfg = Release|x64
+		{5B6ACF3C-BB48-432F-98D2-35BE84A00539}.Release|x64.Build.0 = Release|x64
+		{CCFCA552-3DEA-4F4E-938D-F5ED022063D2}.Debug|x64.ActiveCfg = Debug|x64
+		{CCFCA552-3DEA-4F4E-938D-F5ED022063D2}.Debug|x64.Build.0 = Debug|x64
+		{CCFCA552-3DEA-4F4E-938D-F5ED022063D2}.Release|x64.ActiveCfg = Release|x64
+		{CCFCA552-3DEA-4F4E-938D-F5ED022063D2}.Release|x64.Build.0 = Release|x64
+		{1243BB8E-F065-446A-9B1C-629D731F3B63}.Debug|x64.ActiveCfg = Debug|x64
+		{1243BB8E-F065-446A-9B1C-629D731F3B63}.Debug|x64.Build.0 = Debug|x64
+		{1243BB8E-F065-446A-9B1C-629D731F3B63}.Release|x64.ActiveCfg = Release|x64
+		{1243BB8E-F065-446A-9B1C-629D731F3B63}.Release|x64.Build.0 = Release|x64
+		{00D0DD4D-959F-4B95-85D9-B3CC9AD2AA66}.Debug|x64.ActiveCfg = Debug|x64
+		{00D0DD4D-959F-4B95-85D9-B3CC9AD2AA66}.Debug|x64.Build.0 = Debug|x64
+		{00D0DD4D-959F-4B95-85D9-B3CC9AD2AA66}.Release|x64.ActiveCfg = Release|x64
+		{00D0DD4D-959F-4B95-85D9-B3CC9AD2AA66}.Release|x64.Build.0 = Release|x64
+		{3ABD7C60-D069-484F-A0B2-2F0C2C1BD5A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3ABD7C60-D069-484F-A0B2-2F0C2C1BD5A5}.Debug|x64.Build.0 = Debug|Any CPU
+		{3ABD7C60-D069-484F-A0B2-2F0C2C1BD5A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{3ABD7C60-D069-484F-A0B2-2F0C2C1BD5A5}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

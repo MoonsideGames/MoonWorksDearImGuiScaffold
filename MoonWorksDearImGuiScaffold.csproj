@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<TargetName>MoonWorksDearImGuiScaffold</TargetName>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+		<StartupObject>MoonWorksDearImGuiScaffold.Program</StartupObject>
+		<AssemblyName>MoonWorksDearImGuiScaffold</AssemblyName>
+		<RootNamespace>MoonWorksDearImGuiScaffold</RootNamespace>
+		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ApplicationIcon />
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Content\**\*.*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<DefaultItemExcludes>$(DefaultItemExcludes);lib\**\*</DefaultItemExcludes>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="lib\MoonWorks\MoonWorks.csproj" />
+		<ProjectReference Include="lib\ImGui.NET\ImGui.NET.csproj" />
+	</ItemGroup>
+
+	<Import Project=".\CopyMoonlibs.targets" />
+</Project>
