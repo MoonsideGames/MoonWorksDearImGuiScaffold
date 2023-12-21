@@ -102,7 +102,7 @@
         "command": "MoonWorksDearImGuiScaffold.exe"
       },
       "options": {
-        "cwd": "${workspaceFolder}/bin/Debug/net8.0"
+        "cwd": "${workspaceFolder}/bin/Release/net8.0"
       },
       "type": "process",
       "group": {

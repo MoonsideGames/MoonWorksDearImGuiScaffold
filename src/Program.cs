@@ -22,10 +22,16 @@ class Program
 			Cap = 60
 		};
 
+		var debugMode = false;
+
+		#if DEBUG
+		debugMode = true;
+		#endif
+
 		MoonWorksDearImGuiScaffoldGame game = new MoonWorksDearImGuiScaffoldGame(
 			windowCreateInfo,
 			frameLimiterSettings,
-			true
+			debugMode
 		);
 
 		game.Run();
