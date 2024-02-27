@@ -19,10 +19,12 @@ class MoonWorksDearImGuiScaffoldGame : Game
 
 	private uint VertexCount = 0;
 	private uint IndexCount = 0;
-	private MoonWorks.Graphics.Buffer ImGuiVertexBuffer = null;
-	private MoonWorks.Graphics.Buffer ImGuiIndexBuffer = null;
+	private GpuBuffer ImGuiVertexBuffer = null;
+	private GpuBuffer ImGuiIndexBuffer = null;
 
 	private TextureStorage TextureStorage;
+
+	private ResourceUploader ResourceUploader;
 
 	public MoonWorksDearImGuiScaffoldGame(
 		WindowCreateInfo windowCreateInfo,
@@ -31,6 +33,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 	) : base(windowCreateInfo, frameLimiterSettings, 60, debugMode)
 	{
 		TextureStorage = new TextureStorage();
+		ResourceUploader = new ResourceUploader(GraphicsDevice);
 
 		ImGui.CreateContext();
 
@@ -177,7 +180,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			ImGuiVertexBuffer?.Dispose();
 
 			VertexCount = (uint)(drawDataPtr.TotalVtxCount * 1.5f);
-			ImGuiVertexBuffer = MoonWorks.Graphics.Buffer.Create<Position2DTextureColorVertex>(
+			ImGuiVertexBuffer = GpuBuffer.Create<Position2DTextureColorVertex>(
 				GraphicsDevice,
 				BufferUsageFlags.Vertex,
 				VertexCount
@@ -189,7 +192,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			ImGuiIndexBuffer?.Dispose();
 
 			IndexCount = (uint)(drawDataPtr.TotalIdxCount * 1.5f);
-			ImGuiIndexBuffer = MoonWorks.Graphics.Buffer.Create<ushort>(
+			ImGuiIndexBuffer = GpuBuffer.Create<ushort>(
 				GraphicsDevice,
 				BufferUsageFlags.Index,
 				IndexCount
@@ -203,23 +206,23 @@ class MoonWorksDearImGuiScaffoldGame : Game
 		{
 			var cmdList = drawDataPtr.CmdLists[n];
 
-			commandBuffer.SetBufferData<Position2DTextureColorVertex>(
+			ResourceUploader.SetBufferData(
 				ImGuiVertexBuffer,
-				cmdList.VtxBuffer.Data,
 				vertexOffset,
-				(uint)cmdList.VtxBuffer.Size
+				new Span<Position2DTextureColorVertex>((void*) cmdList.VtxBuffer.Data, cmdList.VtxBuffer.Size)
 			);
 
-			commandBuffer.SetBufferData<ushort>(
+			ResourceUploader.SetBufferData(
 				ImGuiIndexBuffer,
-				cmdList.IdxBuffer.Data,
 				indexOffset,
-				(uint)cmdList.IdxBuffer.Size
+				new Span<ushort>((void*) cmdList.IdxBuffer.Data, cmdList.IdxBuffer.Size)
 			);
 
-			vertexOffset += (uint)cmdList.VtxBuffer.Size;
-			indexOffset += (uint)cmdList.IdxBuffer.Size;
+			vertexOffset += (uint) cmdList.VtxBuffer.Size;
+			indexOffset += (uint) cmdList.IdxBuffer.Size;
 		}
+
+		ResourceUploader.Upload();
 
 		GraphicsDevice.Submit(commandBuffer);
 	}
@@ -249,7 +252,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 
 		commandBuffer.BindGraphicsPipeline(ImGuiPipeline);
 
-		var vertexUniformOffset = commandBuffer.PushVertexShaderUniforms(
+		commandBuffer.PushVertexShaderUniforms(
 			Matrix4x4.CreateOrthographicOffCenter(0, ioPtr.DisplaySize.X, ioPtr.DisplaySize.Y, 0, -1, 1)
 		);
 
@@ -294,9 +297,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 				commandBuffer.DrawIndexedPrimitives(
 					vertexOffset,
 					indexOffset,
-					drawCmd.ElemCount / 3,
-					vertexUniformOffset,
-					0
+					drawCmd.ElemCount / 3
 				);
 
 				indexOffset += drawCmd.ElemCount;
@@ -308,9 +309,9 @@ class MoonWorksDearImGuiScaffoldGame : Game
 		commandBuffer.EndRenderPass();
 	}
 
-	private void BuildFontAtlas()
+	private unsafe void BuildFontAtlas()
 	{
-		var commandBuffer = GraphicsDevice.AcquireCommandBuffer();
+		var resourceUploader = new ResourceUploader(GraphicsDevice);
 
 		var io = ImGui.GetIO();
 
@@ -321,17 +322,14 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			out int bytesPerPixel
 		);
 
-		var fontTexture = Texture.CreateTexture2D(
-			GraphicsDevice,
-			(uint)width,
-			(uint)height,
-			TextureFormat.R8G8B8A8,
-			TextureUsageFlags.Sampler
+		var fontTexture = resourceUploader.CreateTexture2D(
+			new Span<byte>((void*) pixelData, width * height * bytesPerPixel),
+            (uint) width,
+            (uint) height
 		);
 
-		commandBuffer.SetTextureData(fontTexture, pixelData, (uint)(width * height * bytesPerPixel));
-
-		GraphicsDevice.Submit(commandBuffer);
+		resourceUploader.Upload();
+		resourceUploader.Dispose();
 
 		io.Fonts.SetTexID(fontTexture.Handle);
 		io.Fonts.ClearTexData();
