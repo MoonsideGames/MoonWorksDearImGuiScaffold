@@ -23,6 +23,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 	private GpuBuffer ImGuiIndexBuffer = null;
 
 	private TextureStorage TextureStorage;
+	private Texture FontTexture;
 
 	private ResourceUploader ResourceUploader;
 
@@ -152,13 +153,12 @@ class MoonWorksDearImGuiScaffoldGame : Game
 		var io = ImGui.GetIO();
 		var drawDataPtr = ImGui.GetDrawData();
 
-		UpdateImGuiBuffers(drawDataPtr);
-
 		var commandBuffer = GraphicsDevice.AcquireCommandBuffer();
 		var swapchainTexture = commandBuffer.AcquireSwapchainTexture(MainWindow);
 
 		if (swapchainTexture != null)
 		{
+			UpdateImGuiBuffers(drawDataPtr);
 			RenderCommandLists(commandBuffer, swapchainTexture, drawDataPtr, io);
 		}
 
@@ -302,7 +302,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			out int bytesPerPixel
 		);
 
-		var fontTexture = resourceUploader.CreateTexture2D(
+		FontTexture = resourceUploader.CreateTexture2D(
 			new Span<byte>((void*) pixelData, width * height * bytesPerPixel),
             (uint) width,
             (uint) height
@@ -311,9 +311,9 @@ class MoonWorksDearImGuiScaffoldGame : Game
 		resourceUploader.Upload();
 		resourceUploader.Dispose();
 
-		io.Fonts.SetTexID(fontTexture.Handle);
+		io.Fonts.SetTexID(FontTexture.Handle);
 		io.Fonts.ClearTexData();
 
-		TextureStorage.Add(fontTexture);
+		TextureStorage.Add(FontTexture);
 	}
 }
