@@ -29,8 +29,9 @@ class MoonWorksDearImGuiScaffoldGame : Game
 	public MoonWorksDearImGuiScaffoldGame(
 		WindowCreateInfo windowCreateInfo,
 		FrameLimiterSettings frameLimiterSettings,
+		Span<Backend> preferredBackends,
 		bool debugMode
-	) : base(windowCreateInfo, frameLimiterSettings, 60, debugMode)
+	) : base(windowCreateInfo, frameLimiterSettings, preferredBackends, 60, debugMode)
 	{
 		TextureStorage = new TextureStorage();
 		ResourceUploader = new ResourceUploader(GraphicsDevice);
@@ -161,7 +162,9 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			RenderCommandLists(commandBuffer, swapchainTexture, drawDataPtr, io);
 		}
 
-		GraphicsDevice.Submit(commandBuffer);
+		var fence = GraphicsDevice.SubmitAndAcquireFence(commandBuffer);
+		GraphicsDevice.WaitForFences(fence);
+		GraphicsDevice.ReleaseFence(fence);
 	}
 
 	protected override void Destroy()
@@ -172,8 +175,6 @@ class MoonWorksDearImGuiScaffoldGame : Game
 	private unsafe void UpdateImGuiBuffers(ImDrawDataPtr drawDataPtr)
 	{
 		if (drawDataPtr.TotalVtxCount == 0) { return; }
-
-		var commandBuffer = GraphicsDevice.AcquireCommandBuffer();
 
 		if (drawDataPtr.TotalVtxCount > VertexCount)
 		{
@@ -209,13 +210,15 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			ResourceUploader.SetBufferData(
 				ImGuiVertexBuffer,
 				vertexOffset,
-				new Span<Position2DTextureColorVertex>((void*) cmdList.VtxBuffer.Data, cmdList.VtxBuffer.Size)
+				new Span<Position2DTextureColorVertex>((void*) cmdList.VtxBuffer.Data, cmdList.VtxBuffer.Size),
+				n == 0 ? WriteOptions.Cycle : WriteOptions.SafeOverwrite
 			);
 
 			ResourceUploader.SetBufferData(
 				ImGuiIndexBuffer,
 				indexOffset,
-				new Span<ushort>((void*) cmdList.IdxBuffer.Data, cmdList.IdxBuffer.Size)
+				new Span<ushort>((void*) cmdList.IdxBuffer.Data, cmdList.IdxBuffer.Size),
+				n == 0 ? WriteOptions.Cycle : WriteOptions.SafeOverwrite
 			);
 
 			vertexOffset += (uint) cmdList.VtxBuffer.Size;
@@ -223,31 +226,12 @@ class MoonWorksDearImGuiScaffoldGame : Game
 		}
 
 		ResourceUploader.Upload();
-
-		GraphicsDevice.Submit(commandBuffer);
 	}
 
 	private void RenderCommandLists(CommandBuffer commandBuffer, Texture renderTexture, ImDrawDataPtr drawDataPtr, ImGuiIOPtr ioPtr)
 	{
-		var view = Matrix4x4.CreateLookAt(
-			new Vector3(0, 0, 1),
-			Vector3.Zero,
-			Vector3.Up
-		);
-
-		var projection = Matrix4x4.CreateOrthographicOffCenter(
-			0,
-			480,
-			270,
-			0,
-			0.01f,
-			4000f
-		);
-
-		var viewProjectionMatrix = view * projection;
-
 		commandBuffer.BeginRenderPass(
-			new ColorAttachmentInfo(renderTexture, MoonWorks.Graphics.Color.CornflowerBlue)
+			new ColorAttachmentInfo(renderTexture, WriteOptions.Cycle, Color.CornflowerBlue)
 		);
 
 		commandBuffer.BindGraphicsPipeline(ImGuiPipeline);
@@ -274,9 +258,6 @@ class MoonWorksDearImGuiScaffoldGame : Game
 					new TextureSamplerBinding(TextureStorage.GetTexture(drawCmd.TextureId), ImGuiSampler)
 				);
 
-				var topLeft = Vector2.Transform(new Vector2(drawCmd.ClipRect.X, drawCmd.ClipRect.Y), viewProjectionMatrix);
-				var bottomRight = Vector2.Transform(new Vector2(drawCmd.ClipRect.Z, drawCmd.ClipRect.W), viewProjectionMatrix);
-
 				var width = drawCmd.ClipRect.Z - (int)drawCmd.ClipRect.X;
 				var height = drawCmd.ClipRect.W - (int)drawCmd.ClipRect.Y;
 
@@ -295,15 +276,14 @@ class MoonWorksDearImGuiScaffoldGame : Game
 				);
 
 				commandBuffer.DrawIndexedPrimitives(
-					vertexOffset,
-					indexOffset,
+					drawCmd.VtxOffset + vertexOffset,
+					drawCmd.IdxOffset + indexOffset,
 					drawCmd.ElemCount / 3
 				);
-
-				indexOffset += drawCmd.ElemCount;
 			}
 
-			vertexOffset += (uint)cmdList.VtxBuffer.Size;
+			vertexOffset += (uint) cmdList.VtxBuffer.Size;
+			indexOffset  += (uint) cmdList.IdxBuffer.Size;
 		}
 
 		commandBuffer.EndRenderPass();

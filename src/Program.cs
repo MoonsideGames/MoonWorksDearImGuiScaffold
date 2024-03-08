@@ -1,4 +1,5 @@
 using MoonWorks;
+using MoonWorks.Graphics;
 
 namespace MoonWorksDearImGuiScaffold;
 
@@ -31,6 +32,7 @@ class Program
 		MoonWorksDearImGuiScaffoldGame game = new MoonWorksDearImGuiScaffoldGame(
 			windowCreateInfo,
 			frameLimiterSettings,
+			[Backend.Vulkan, Backend.D3D11],
 			debugMode
 		);
 
