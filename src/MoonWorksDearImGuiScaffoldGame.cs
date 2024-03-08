@@ -5,6 +5,7 @@ using ImGuiNET;
 using System.IO;
 using MoonWorks.Math.Float;
 using System;
+using System.Runtime.InteropServices;
 
 namespace MoonWorksDearImGuiScaffold;
 
@@ -162,9 +163,7 @@ class MoonWorksDearImGuiScaffoldGame : Game
 			RenderCommandLists(commandBuffer, swapchainTexture, drawDataPtr, io);
 		}
 
-		var fence = GraphicsDevice.SubmitAndAcquireFence(commandBuffer);
-		GraphicsDevice.WaitForFences(fence);
-		GraphicsDevice.ReleaseFence(fence);
+		GraphicsDevice.Submit(commandBuffer);
 	}
 
 	protected override void Destroy()

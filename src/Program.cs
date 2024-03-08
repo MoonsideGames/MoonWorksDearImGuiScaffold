@@ -32,7 +32,7 @@ class Program
 		MoonWorksDearImGuiScaffoldGame game = new MoonWorksDearImGuiScaffoldGame(
 			windowCreateInfo,
 			frameLimiterSettings,
-			[Backend.D3D11, Backend.Vulkan],
+			[Backend.Vulkan, Backend.D3D11],
 			debugMode
 		);
 
